@@ -118,7 +118,7 @@ void HighContrast(IMG_RGB* img_out, IMG_RGB* img_in, double a, double b)
 void LowContrast(IMG_RGB* img_out, IMG_RGB* img_in, double a, double b)
 {
     if (a >= b) {
-        cout << "HighContrast: wrong range (b <= a)" << endl;
+        cout << "LowContrast: wrong range (b <= a)" << endl;
         return;
     }
 
@@ -388,11 +388,11 @@ void WeightedMeanFilter(IMG_RGB* img_out, IMG_RGB* img_in, int add)
 void MedialFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
 {
     if (size % 2 == 0) {
-        cout << "MeanFilter: filter size error (size is even number)" << endl;
+        cout << "MedianFilter: filter size error (size is even number)" << endl;
         return;
     }
     else if (img_in->width < size || img_in->height < size) {
-        cout << "MeanFilter: filter size error (size is even number)" << endl;
+        cout << "MedianFilter: filter size error (size is even number)" << endl;
         return;
     }
 
@@ -437,11 +437,11 @@ void MedialFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
 void GaussianFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size, double sigma)
 {
     if (size % 2 == 0) {
-        cout << "MeanFilter: filter size error (size is even number)" << endl;
+        cout << "GaussianFilter: filter size error (size is even number)" << endl;
         return;
     }
     else if (img_in->width < size || img_in->height < size) {
-        cout << "MeanFilter: filter size error (size is even number)" << endl;
+        cout << "GaussianFilter: filter size error (size is even number)" << endl;
         return;
     }
 
