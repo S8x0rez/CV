@@ -27,6 +27,12 @@ int main(int argc, char* argv[])
     cout << "   -- output file= " << outfname << endl;
     
     ReadBMP(img, infname);
+    
+    /* How to use work IMG_RGB
+    IMG_RGB* img_work = new IMG_RGB;
+    AllocImgRGB(img_work, img->width, img->height);
+    */
+    
     WriteBMP(outfname, img);
     Free(img);
 
