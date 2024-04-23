@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     IMG_RGB* img = new IMG_RGB;
 
     if(argc < 3){
-        cerr << "Usage: " << argv[0] << " infname outfname color_space color_format" << endl;
+        cerr << "Usage: " << argv[0] << " infname outfname" << endl;
         cout << "        infname: input file name (bitmap)" << endl;
         cout << "        outfname: output file name (bitmap)" << endl;
         exit(-1);
