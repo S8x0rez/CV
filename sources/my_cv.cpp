@@ -193,6 +193,14 @@ void Solarization(IMG_RGB* img_out, IMG_RGB* img_in, int a)
             value = img_in->R[j + k * width];
             if ((value / flag) % 2) img_out->R[j + k * width] = RoundingInt(255 - value * a - 255 * (value / flag));
             else img_out->R[j + k * width] = RoundingInt(value * a - 255 * (value / flag));
+
+            value = img_in->G[j + k * width];
+            if ((value / flag) % 2) img_out->G[j + k * width] = RoundingInt(255 - value * a - 255 * (value / flag));
+            else img_out->G[j + k * width] = RoundingInt(value * a - 255 * (value / flag));
+            
+            value = img_in->B[j + k * width];
+            if ((value / flag) % 2) img_out->B[j + k * width] = RoundingInt(255 - value * a - 255 * (value / flag));
+            else img_out->B[j + k * width] = RoundingInt(value * a - 255 * (value / flag));
         }
     }
 }
@@ -291,11 +299,11 @@ void LaplacianFilter(IMG_RGB* img_out, IMG_RGB* img_in, int direction, int d)  /
             if (direction == 4) {
                 value[0] =                                      -1 * img_in->R[j + (k - 1) * width]
                            -1 * img_in->R[(j - 1) + k * width] + 4 * img_in->R[j + k * width]       -1 * img_in->R[(j + 1) + k * width]
-                                                             -1 * img_in->R[j + (k + 1) * width];
+                                                                -1 * img_in->R[j + (k + 1) * width];
 
                 value[1] =                                      -1 * img_in->G[j + (k - 1) * width]
                            -1 * img_in->G[(j - 1) + k * width] + 4 * img_in->G[j + k * width]       -1 * img_in->G[(j + 1) + k * width]
-                                                             -1 * img_in->G[j + (k + 1) * width];
+                                                                -1 * img_in->G[j + (k + 1) * width];
 
                 value[2] =                                      -1 * img_in->B[j + (k - 1) * width]
                            -1 * img_in->B[(j - 1) + k * width] + 4 * img_in->B[j + k * width]       -1 * img_in->B[(j + 1) + k * width]
@@ -524,6 +532,6 @@ void MotionBlur(IMG_RGB* img_out, IMG_RGB* img_in, int size, int direction)
                 img_out->G[j + k * width] = RoundingInt(value[1] / size);
                 img_out->B[j + k * width] = RoundingInt(value[2] / size);
             }
-            }
+        }
     }
 }
