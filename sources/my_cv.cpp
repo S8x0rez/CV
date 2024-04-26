@@ -251,9 +251,10 @@ void PrewittFilter(IMG_RGB* img_out, IMG_RGB* img_in, int mode, int d)  // in: g
                 value += -1 * img_in->R[(j - 1) + (k - 1) * width] -2 * img_in->R[j + (k - 1) * width] -1 * img_in->R[(j + 1) + (k - 1) * width]
                          +1 * img_in->R[(j - 1) + (k + 1) * width] +2 * img_in->R[j + (k + 1) * width] +1 * img_in->R[(j + 1) + (k + 1) * width];
             }
-            img_out->R[j + k * width] = RoundingInt(d * value);
-            img_out->G[j + k * width] = RoundingInt(d * value);
-            img_out->B[j + k * width] = RoundingInt(d * value);
+            value = d * abs(value);
+            img_out->R[j + k * width] = RoundingInt(value);
+            img_out->G[j + k * width] = RoundingInt(value);
+            img_out->B[j + k * width] = RoundingInt(value);
         }
     }
 }
@@ -279,9 +280,10 @@ void SobelFilter(IMG_RGB* img_out, IMG_RGB* img_in, int mode, int d)  // in: gra
                 value += -1 * img_in->R[(j - 1) + (k - 1) * width] -2 * img_in->R[j + (k - 1) * width] -1 * img_in->R[(j + 1) + (k - 1) * width]
                          +1 * img_in->R[(j - 1) + (k + 1) * width] +2 * img_in->R[j + (k + 1) * width] +1 * img_in->R[(j + 1) + (k + 1) * width];
             }
-            img_out->R[j + k * width] = RoundingInt(d * value);
-            img_out->G[j + k * width] = RoundingInt(d * value);
-            img_out->B[j + k * width] = RoundingInt(d * value);
+            value = d * abs(value);
+            img_out->R[j + k * width] = RoundingInt(value);
+            img_out->G[j + k * width] = RoundingInt(value);
+            img_out->B[j + k * width] = RoundingInt(value);
         }
     }
 }
