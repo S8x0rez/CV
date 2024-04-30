@@ -15,7 +15,7 @@ void GrayScale(IMG_RGB* img_out, IMG_RGB* img_in)
             value = RoundingDecimal(0.2126 * (double)img_in->R[j + k * width] + 0.7152 * (double)img_in->G[j + k * width] + 0.0722 * (double)img_in->B[j + k * width]);
 
             // BT.601
-            // value = (0.2990 * (double)img_in->R[j + k * width] + 0.587 * (double)img_in->G[j + k * width] + 0.114 * (double)img_in->B[j + k * width]);
+            // value = RoundingDecimal(0.2990 * (double)img_in->R[j + k * width] + 0.587 * (double)img_in->G[j + k * width] + 0.114 * (double)img_in->B[j + k * width]);
 
             img_out->R[j + k * width] = value;
             img_out->G[j + k * width] = value;
@@ -145,7 +145,6 @@ void LowContrast(IMG_RGB* img_out, IMG_RGB* img_in, double a, double b)
 void NegaPosiReversal(IMG_RGB* img_out, IMG_RGB* img_in)
 {
     int width, height;
-    uchar value;
 
     width = img_in->width;
     height = img_in->height;
@@ -163,7 +162,6 @@ void NegaPosiReversal(IMG_RGB* img_out, IMG_RGB* img_in)
 void Postarization(IMG_RGB* img_out, IMG_RGB* img_in, int lv)
 {
     int width, height;
-    uchar value;
     int band;
 
     width = img_in->width;
@@ -209,7 +207,6 @@ void Solarization(IMG_RGB* img_out, IMG_RGB* img_in, int a)
 void Binarize(IMG_RGB* img_out, IMG_RGB* img_in, int threshold)
 {
     int width, height;
-    uchar value;
 
     width = img_in->width;
     height = img_in->height;
