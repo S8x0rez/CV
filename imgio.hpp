@@ -10,7 +10,10 @@
 
 using namespace std;
 
-void AllocImg(IMG_COMMON*, int, int, int);
-void Free(IMG_COMMON*);
+void ReadBMP(IMG_RGB*, char*);
+void ReadYUV(IMG_YUV*, char*, int, int, int);
+
+void WriteBMP(char*, IMG_RGB*);
+void WriteYUV(char*, IMG_YUV*);
 
 #endif // IMGIO_HPP

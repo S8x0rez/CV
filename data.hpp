@@ -58,16 +58,30 @@ T* MemoryAlloc(int size)
     return m;
 }
 
+void AllocImg(IMG_COMMON*, int, int, int);
+void AllocImgRGB(IMG_RGB*, int, int);
+void AllocImgHSV(IMG_HSV*, int, int);
+void AllocImgYUV(IMG_YUV*, int, int, int);
+
+void Free(IMG_COMMON*);
+void Free(IMG_RGB*);
+void Free(IMG_HSV*);
+void Free(IMG_YUV*);
+
+void CopyIMG(IMG_COMMON*, IMG_COMMON*);
+void CopyRGB(IMG_RGB*, IMG_RGB*);
+void CopyHSV(IMG_HSV*, IMG_HSV*);
+void CopyYUV(IMG_YUV*, IMG_YUV*);
+
+uchar RoundingUC(double);
+uchar RoundingUC(int);
+int RoundingInt(double);
+
 void YUV2HSV(IMG_HSV*, IMG_YUV*);
 void HSV2YUV(IMG_YUV*, IMG_HSV*);
 void RGB2HSV(IMG_HSV*, IMG_RGB*);
 void HSV2RGB(IMG_RGB*, IMG_HSV*);
 void RGB2YUV(IMG_YUV*, IMG_RGB*, int);
 void YUV2RGB(IMG_RGB*, IMG_YUV*, int);
-
-void CopyRGB(IMG_RGB*, IMG_RGB*);
-
-uchar RoundingDecimal(double);
-uchar RoundingInt(int);
 
 #endif // DATA_HPP

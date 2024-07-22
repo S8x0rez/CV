@@ -1,4 +1,4 @@
-#include "bmpio.hpp"
+#include "imgio.hpp"
 
 //------------------------------------------------------
 // Function-ID: 
@@ -8,30 +8,6 @@
 // Return-Value: 
 // Special_Desc:
 //------------------------------------------------------
-void AllocImgRGB(IMG_RGB* img, int width, int height)
-{
-    img->width = width;
-    img->height = height;
-    img->pixel = width * height;
-
-    if (img->pixel == 0) { // 処理系定義によるエラー回避
-        cerr << "AllocImg: img size error" << endl;
-        exit(-1);
-    }
-
-    img->R = MemoryAlloc<uchar>(img->pixel);
-    img->G = MemoryAlloc<uchar>(img->pixel);
-    img->B = MemoryAlloc<uchar>(img->pixel);
-}
-
-void Free(IMG_RGB* img)
-{
-    if (img->R) delete[] img->R;
-    if (img->G) delete[] img->G;
-    if (img->B) delete[] img->B;
-    delete img;
-}
-
 void ReadBMP(IMG_RGB* img, char* filename)
 {
     ifstream ifs(filename, ios::binary);
@@ -59,6 +35,38 @@ void ReadBMP(IMG_RGB* img, char* filename)
             img->B[j + k * img->width] = ifs.get();
             img->G[j + k * img->width] = ifs.get();
             img->R[j + k * img->width] = ifs.get();
+        }
+    }
+
+    ifs.close();
+}
+
+void ReadYUV(IMG_YUV* img, char* filename, int width, int height, int color_format)
+{
+    ifstream ifs(filename, ios::binary);
+    if (ifs.fail()) {
+        cerr << "File open error = " << filename << endl;
+        exit(-1);
+    }
+
+    AllocImgYUV(img, width, height, color_format);
+
+    cout << "Image size : width =" << img->width << "  height =" << img->height << endl;
+    cout << "Image color format =" << color_format << endl;
+
+    if (color_format == 422) {
+
+    }
+    else if (color_format == 420) {
+
+    }
+    else {  // color_format == 444
+        for (int k = 0; k < img->height; k++) {
+            for (int j = 0; j < img->width; j++) {
+                img->Y[j + k * width] = ifs.get();
+                img->U[j + k * width] = ifs.get();
+                img->V[j + k * width] = ifs.get();
+            }
         }
     }
 
@@ -139,5 +147,32 @@ void WriteBMP(char* filename, IMG_RGB* img)
         }
     }
     
+    ofs.close();
+}
+
+void WriteYUV(char* filename, IMG_YUV* img)
+{
+    ofstream ofs(filename, ios::binary);
+    if (ofs.fail()) {
+        cerr << "File open error = " << filename << endl;
+        exit(-1);
+    }
+
+    if (img->color_format == 422) {
+
+    }
+    else if (img->color_format == 420) {
+
+    }
+    else {  // color_format == 444
+        for (int k = 0; k < img->height; k++) {
+            for (int j = 0; j < img->width; j++) {
+                ofs << img->Y[j + k * img->width];
+                ofs << img->U[j + k * img->width];
+                ofs << img->V[j + k * img->width];
+            }
+        }
+    }
+
     ofs.close();
 }
