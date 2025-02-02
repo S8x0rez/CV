@@ -78,7 +78,7 @@ void Free(IMG_RGB *);
 void Free(IMG_HSV *);
 void Free(IMG_YUV *);
 
-void CopyIMG(IMG_COMMON *, IMG_COMMON *);
+void CopyCMN(IMG_COMMON *, IMG_COMMON *);
 void CopyRGB(IMG_RGB *, IMG_RGB *);
 void CopyHSV(IMG_HSV *, IMG_HSV *);
 void CopyYUV(IMG_YUV *, IMG_YUV *);

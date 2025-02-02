@@ -1,6 +1,6 @@
 #include "my_cv.hpp"
 
-void GrayScale(IMG_RGB* img)
+void GrayScale(IMG_RGB *img)
 {
     int width, height;
     uchar value;
@@ -24,7 +24,7 @@ void GrayScale(IMG_RGB* img)
     }
 }
 
-void ValueScaling(IMG_RGB* img, int a, int b)
+void ValueScaling(IMG_RGB *img, int a, int b)
 {
     int width, height;
     int x;
@@ -46,7 +46,7 @@ void ValueScaling(IMG_RGB* img, int a, int b)
     }
 }
 
-void GammaCorrection(IMG_RGB* img, double gamma)
+void GammaCorrection(IMG_RGB *img, double gamma)
 {
     int width, height;
     double x;
@@ -57,7 +57,7 @@ void GammaCorrection(IMG_RGB* img, double gamma)
     for (int k = 0; k < height; k++){
         for (int j = 0; j < width; j++){
             x = img->R[j + k * width];
-            img->R[j + k * width] = RoundingUC((x / 255, gamma) * 255);
+            img->R[j + k * width] = RoundingUC(pow(x / 255, gamma) * 255);
 
             x = img->G[j + k * width];
             img->G[j + k * width] = RoundingUC(pow(x / 255, gamma) * 255);
@@ -68,7 +68,7 @@ void GammaCorrection(IMG_RGB* img, double gamma)
     }
 }
 
-void SToneCurve(IMG_RGB* img, double p)
+void SToneCurve(IMG_RGB *img, double p)
 {
     int width, height;
     double x;
@@ -90,7 +90,7 @@ void SToneCurve(IMG_RGB* img, double p)
     }
 }
 
-void HighContrast(IMG_RGB* img, double a, double b)
+void HighContrast(IMG_RGB *img, double a, double b)
 {
     if (a >= b) {
         cout << "HighContrast: wrong range (b <= a)" << endl;
@@ -117,7 +117,7 @@ void HighContrast(IMG_RGB* img, double a, double b)
     }
 }
 
-void LowContrast(IMG_RGB* img, double a, double b)
+void LowContrast(IMG_RGB *img, double a, double b)
 {
     if (a >= b) {
         cout << "LowContrast: wrong range (b <= a)" << endl;
@@ -144,7 +144,7 @@ void LowContrast(IMG_RGB* img, double a, double b)
     }
 }
 
-void NegaPosiReversal(IMG_RGB* img)
+void NegaPosiInversion(IMG_RGB *img)
 {
     int width, height;
 
@@ -161,7 +161,7 @@ void NegaPosiReversal(IMG_RGB* img)
 
 }
 
-void Postarization(IMG_RGB* img, int lv)
+void Postarization(IMG_RGB *img, int lv)
 {
     int width, height;
     int band;
@@ -179,7 +179,7 @@ void Postarization(IMG_RGB* img, int lv)
     }
 }
 
-void Solarization(IMG_RGB* img, int a)
+void Solarization(IMG_RGB *img, int a)
 {
     int width, height;
     int value;
@@ -206,10 +206,16 @@ void Solarization(IMG_RGB* img, int a)
 }
 
 
-void Binarize(IMG_RGB* img, int threshold)
+void Binarize(IMG_RGB *img, int threshold)
 {
-    IMG_HSV* tmp;
+    IMG_HSV *tmp = new IMG_HSV;
 
+    int width, height;
+
+    width = img->width;
+    height = img->height;
+
+    AllocImgHSV(tmp, width, height);
     RGB2HSV(tmp, img);
 
     for (int k = 0; k < tmp->height; k++){
@@ -227,12 +233,12 @@ void Binarize(IMG_RGB* img, int threshold)
         }
     }
 
-    
+    Free(tmp);
 }
 
-void changeBrightness(IMG_RGB* img, int x)
+void ChangeBrightness(IMG_RGB *img, int x)
 {
-    IMG_HSV* tmp;
+    IMG_HSV *tmp = new IMG_HSV;
 
     int width, height;
     int value;
@@ -254,9 +260,9 @@ void changeBrightness(IMG_RGB* img, int x)
     Free(tmp);
 }
 
-void PrewittFilter(IMG_RGB* img_out, IMG_RGB* img_in, int mode, int d)  // in: gray scale
+void PrewittFilter(IMG_RGB *img_in, int mode, int d)  // in: gray scale
 {
-    IMG_HSV* tmp;
+    IMG_HSV *tmp = new IMG_HSV;
     int width, height;
     int value;
 
@@ -279,18 +285,18 @@ void PrewittFilter(IMG_RGB* img_out, IMG_RGB* img_in, int mode, int d)  // in: g
                          +1 * tmp->V[(j - 1) + (k + 1) * width] +2 * tmp->V[j + (k + 1) * width] +1 * tmp->V[(j + 1) + (k + 1) * width];
             }
             value = d * abs(value);
-            img_out->R[j + k * width] = RoundingUC(value);
-            img_out->G[j + k * width] = RoundingUC(value);
-            img_out->B[j + k * width] = RoundingUC(value);
+            img_in->R[j + k * width] = RoundingUC(value);
+            img_in->G[j + k * width] = RoundingUC(value);
+            img_in->B[j + k * width] = RoundingUC(value);
         }
     }
 
     Free(tmp);
 }
 
-void SobelFilter(IMG_RGB* img_out, IMG_RGB* img_in, int mode, int d)  // in: gray scale
+void SobelFilter(IMG_RGB *img_in, int mode, int d)  // in: gray scale
 {
-    IMG_HSV* tmp;
+    IMG_HSV *tmp = new IMG_HSV;
     int width, height;
     int value;
 
@@ -313,21 +319,59 @@ void SobelFilter(IMG_RGB* img_out, IMG_RGB* img_in, int mode, int d)  // in: gra
                          +1 * tmp->V[(j - 1) + (k + 1) * width] +2 * tmp->V[j + (k + 1) * width] +1 * tmp->V[(j + 1) + (k + 1) * width];
             }
             value = d * abs(value);
-            img_out->R[j + k * width] = RoundingUC(value);
-            img_out->G[j + k * width] = RoundingUC(value);
-            img_out->B[j + k * width] = RoundingUC(value);
+            img_in->R[j + k * width] = RoundingUC(value);
+            img_in->G[j + k * width] = RoundingUC(value);
+            img_in->B[j + k * width] = RoundingUC(value);
         }
     }
 
     Free(tmp);
 }
 
-void LaplacianFilter(IMG_RGB* img_out, IMG_RGB* img_in, int direction, int d)  // in: gray scale
+void LaplacianFilter(IMG_RGB *img_in, int direction, int d)  // in: gray scale
 {
+    IMG_HSV *tmp = new IMG_HSV;
+
     int width, height;
 
     width = img_in->width;
     height = img_in->height;
+
+    AllocImgHSV(tmp, width, height);
+    RGB2HSV(tmp, img_in);
+
+    for (int k = 1; k < height - 1; k++){
+        for (int j = 1; j < width - 1; j++){
+            int value;
+            if (direction == 4) {
+                value =                                   -1 * tmp->V[j + (k - 1) * width]
+                        -1 * tmp->V[(j - 1) + k * width] + 4 * tmp->V[j + k * width]       -1 * tmp->V[(j + 1) + k * width]
+                                                          -1 * tmp->V[j + (k + 1) * width];
+            }
+            else {
+                value = -1 * tmp->V[(j - 1) + (k - 1) * width] -1 * tmp->V[j + (k - 1) * width] -1 * tmp->V[(j + 1) + (k - 1) * width]
+                        -1 * tmp->V[(j - 1) + k * width]      + 8 * tmp->V[j + k * width]       -1 * tmp->V[(j + 1) + k * width]
+                        -1 * tmp->V[(j - 1) + (k + 1) * width] -1 * tmp->V[j + (k + 1) * width] -1 * tmp->V[(j + 1) + (k + 1) * width];
+            }
+            img_in->R[j + k * width] = RoundingUC(d * value);
+            img_in->G[j + k * width] = RoundingUC(d * value);
+            img_in->B[j + k * width] = RoundingUC(d * value);
+        }
+    }
+
+    Free(tmp);
+}
+
+void LaplacianFilterRGB(IMG_RGB *img_in, int direction, int d)  // in: gray scale
+{
+    IMG_RGB *img_rgb = new IMG_RGB;
+
+    int width, height;
+
+    width = img_in->width;
+    height = img_in->height;
+
+    AllocImgRGB(img_rgb, width, height);
 
     for (int k = 1; k < height - 1; k++){
         for (int j = 1; j < width - 1; j++){
@@ -358,14 +402,17 @@ void LaplacianFilter(IMG_RGB* img_out, IMG_RGB* img_in, int direction, int d)  /
                            -1 * img_in->B[(j - 1) + k * width]      + 8 * img_in->B[j + k * width]       -1 * img_in->B[(j + 1) + k * width]
                            -1 * img_in->B[(j - 1) + (k + 1) * width] -1 * img_in->B[j + (k + 1) * width] -1 * img_in->B[(j + 1) + (k + 1) * width];
             }
-            img_out->R[j + k * width] = RoundingUC(d * value[0]);
-            img_out->G[j + k * width] = RoundingUC(d * value[1]);
-            img_out->B[j + k * width] = RoundingUC(d * value[2]);
+            img_rgb->R[j + k * width] = RoundingUC(d * value[0]);
+            img_rgb->G[j + k * width] = RoundingUC(d * value[1]);
+            img_rgb->B[j + k * width] = RoundingUC(d * value[2]);
         }
     }
+    
+    CopyRGB(img_in, img_rgb);
+    Free(img_rgb);
 }
 
-void MeanFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
+void MeanFilter(IMG_RGB *img_in, int size)
 {
     if (size % 2 == 0) {
         cout << "MeanFilter: filter size error (size is even number)" << endl;
@@ -376,12 +423,17 @@ void MeanFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
         return;
     }
 
+    IMG_RGB *img_rgb = new IMG_RGB;
+
     int width, height;
     int r;
 
     width = img_in->width;
     height = img_in->height;
     r = size / 2;
+
+    AllocImgRGB(img_rgb, width, height);
+    CopyRGB(img_rgb, img_in);
 
     for (int k = r; k < height - r; k++){
         for (int j = r; j < width - r; j++){
@@ -393,20 +445,27 @@ void MeanFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
                     value[2] += img_in->B[(j + jj) + (k + kk) * width];
                 }
             }
-            img_out->R[j + k * width] = RoundingUC(value[0] / size);
-            img_out->G[j + k * width] = RoundingUC(value[1] / size);
-            img_out->B[j + k * width] = RoundingUC(value[2] / size);
+            img_rgb->R[j + k * width] = RoundingUC(value[0] / (size*size));
+            img_rgb->G[j + k * width] = RoundingUC(value[1] / (size*size));
+            img_rgb->B[j + k * width] = RoundingUC(value[2] / (size*size));
         }
     }
+    
+    CopyRGB(img_in, img_rgb);
+    Free(img_rgb);
 }
 
-void WeightedMeanFilter(IMG_RGB* img_out, IMG_RGB* img_in, int add)
+void WeightedMeanFilter(IMG_RGB *img_in, int add)
 {
+    IMG_RGB *img_rgb = new IMG_RGB;
+
     int width, height;
     int value[3];
 
     width = img_in->width;
     height = img_in->height;
+
+    AllocImgRGB(img_rgb, width, height);
 
     for (int k = 1; k < height - 1; k++){
         for (int j = 1; j < width - 1; j++){
@@ -422,14 +481,17 @@ void WeightedMeanFilter(IMG_RGB* img_out, IMG_RGB* img_in, int add)
                        + img_in->B[(j - 1) + k * width]       + (add + 1) * img_in->B[j + k * width]       + img_in->B[(j + 1) + k * width]
                        + img_in->B[(j - 1) + (k + 1) * width] +             img_in->B[j + (k + 1) * width] + img_in->B[(j + 1) + (k + 1) * width];
 
-            img_out->R[j + k * width] = RoundingUC(value[0] / (9 + add));
-            img_out->G[j + k * width] = RoundingUC(value[1] / (9 + add));
-            img_out->B[j + k * width] = RoundingUC(value[2] / (9 + add));
+            img_rgb->R[j + k * width] = RoundingUC(value[0] / (9 + add));
+            img_rgb->G[j + k * width] = RoundingUC(value[1] / (9 + add));
+            img_rgb->B[j + k * width] = RoundingUC(value[2] / (9 + add));
         }
     }
+    
+    CopyRGB(img_in, img_rgb);
+    Free(img_rgb);
 }
 
-void MedialFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
+void MedianFilter(IMG_RGB *img_in, int size)
 {
     if (size % 2 == 0) {
         cout << "MedianFilter: filter size error (size is even number)" << endl;
@@ -440,10 +502,12 @@ void MedialFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
         return;
     }
 
+    IMG_RGB *img_rgb = new IMG_RGB;
+
     int width, height;
     int r, median;
 
-    int** array = new int*[3];
+    int **array = new int*[3];
     for (int i = 0; i < 3; i++) {
         array[i] = new int[size * size];
     }
@@ -453,22 +517,24 @@ void MedialFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
     r = size / 2;
     median = size * size / 2 + 1;
 
+    AllocImgRGB(img_rgb, width, height);
+
     for (int k = r; k < height - r; k++){
         for (int j = r; j < width - r; j++){
             for (int kk = -r; kk <= r; kk++) {
                 for (int jj = -r; jj <= r; jj++) {
-                    array[0][(jj + r) + (kk + r) * size] += img_in->R[(j + jj) + (k + kk) * width];
-                    array[1][(jj + r) + (kk + r) * size] += img_in->G[(j + jj) + (k + kk) * width];
-                    array[2][(jj + r) + (kk + r) * size] += img_in->B[(j + jj) + (k + kk) * width];
+                    array[0][(jj + r) + (kk + r) * size] = img_in->R[(j + jj) + (k + kk) * width];
+                    array[1][(jj + r) + (kk + r) * size] = img_in->G[(j + jj) + (k + kk) * width];
+                    array[2][(jj + r) + (kk + r) * size] = img_in->B[(j + jj) + (k + kk) * width];
                 }
             }
 
             sort(array[0], array[0] + size * size);
             sort(array[1], array[1] + size * size);
             sort(array[2], array[2] + size * size);
-            img_out->R[j + k * width] = array[0][median];
-            img_out->G[j + k * width] = array[1][median];
-            img_out->B[j + k * width] = array[2][median];
+            img_rgb->R[j + k * width] = array[0][median];
+            img_rgb->G[j + k * width] = array[1][median];
+            img_rgb->B[j + k * width] = array[2][median];
         }
     }
 
@@ -476,9 +542,12 @@ void MedialFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size)
         delete[] array[i];
     }
     delete[] array;
+    
+    CopyRGB(img_in, img_rgb);
+    Free(img_rgb);
 }
 
-void GaussianFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size, double sigma)
+void GaussianFilter(IMG_RGB *img_in, int size, double sigma)
 {
     if (size % 2 == 0) {
         cout << "GaussianFilter: filter size error (size is even number)" << endl;
@@ -489,17 +558,25 @@ void GaussianFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size, double sigma)
         return;
     }
 
+    IMG_RGB *img_rgb = new IMG_RGB;
+
     int width, height;
     int r;
-    double* array = new double[size * size];
+    double *array = new double[size * size];
+    double array_sum = 0;
+    double PiSigma2 = 2 * PI * pow(sigma, 2.);
 
     width = img_in->width;
     height = img_in->height;
     r = size / 2;
 
+    AllocImgRGB(img_rgb, width, height);
+    CopyRGB(img_rgb, img_in);
+
     for (int k = -r; k <= r; k++) {
         for (int j = -r; j <= r; j++) {
-            array[(j + r) + (k + r) * size] = exp(-((k << 2) +(j << 2)) / (2 * pow(sigma, 2.))) / (2 * PI * pow(sigma, 2.));
+            array[(j + r) + (k + r) * size] = exp(-(pow(j, 2) + pow(k, 2)) / (2 * pow(sigma, 2.))) / (2 * PI * pow(sigma, 2.));
+            array_sum +=exp(-(pow(j, 2) + pow(k, 2)) / (2 * pow(sigma, 2.)));
         }
     }
 
@@ -508,29 +585,35 @@ void GaussianFilter(IMG_RGB* img_out, IMG_RGB* img_in, int size, double sigma)
             double value[3] = {0, 0, 0};
             for (int kk = -r; kk <= r; kk++) {
                 for (int jj = -r; jj <= r; jj++) {
-                    value[0] += img_in->R[(j + jj) + (k + kk) * width] * array[(j + r) + (k + r) * size];
-                    value[1] += img_in->G[(j + jj) + (k + kk) * width] * array[(j + r) + (k + r) * size];
-                    value[2] += img_in->B[(j + jj) + (k + kk) * width] * array[(j + r) + (k + r) * size];
+                    value[0] += img_in->R[(j + jj) + (k + kk) * width] * array[(jj + r) + (kk + r) * size] * (PiSigma2 / array_sum);
+                    value[1] += img_in->G[(j + jj) + (k + kk) * width] * array[(jj + r) + (kk + r) * size] * (PiSigma2 / array_sum);
+                    value[2] += img_in->B[(j + jj) + (k + kk) * width] * array[(jj + r) + (kk + r) * size] * (PiSigma2 / array_sum);
                 }
             }
 
-            img_out->R[j + k * width] = value[0];
-            img_out->G[j + k * width] = value[1];
-            img_out->B[j + k * width] = value[2];
+            img_rgb->R[j + k * width] = RoundingUC(value[0]);
+            img_rgb->G[j + k * width] = RoundingUC(value[1]);
+            img_rgb->B[j + k * width] = RoundingUC(value[2]);
         }
     }
 
     delete[] array;
+    CopyRGB(img_in, img_rgb);
+    Free(img_rgb);
 }
 
-void MotionBlur(IMG_RGB* img_out, IMG_RGB* img_in, int size, int direction)
+void MotionBlur(IMG_RGB *img_in, int size, int direction)
 {
+    IMG_RGB *img_rgb = new IMG_RGB;
+
     int width, height;
     int r;
 
     width = img_in->width;
     height = img_in->height;
     r = size / 2;
+
+    AllocImgRGB(img_rgb, width, height);
 
     if (direction == 90) {
         if (height < size) {
@@ -545,9 +628,9 @@ void MotionBlur(IMG_RGB* img_out, IMG_RGB* img_in, int size, int direction)
                     value[2] += img_in->B[j + (k + kk) * width];
                 }
 
-                img_out->R[j + k * width] = RoundingUC(value[0] / (size << 2));
-                img_out->G[j + k * width] = RoundingUC(value[1] / (size << 2));
-                img_out->B[j + k * width] = RoundingUC(value[2] / (size << 2));
+                img_rgb->R[j + k * width] = RoundingUC(value[0] / (size << 2));
+                img_rgb->G[j + k * width] = RoundingUC(value[1] / (size << 2));
+                img_rgb->B[j + k * width] = RoundingUC(value[2] / (size << 2));
             }
         }
     }
@@ -564,17 +647,20 @@ void MotionBlur(IMG_RGB* img_out, IMG_RGB* img_in, int size, int direction)
                     value[2] += img_in->B[(j + jj) + k * width];
                 }
 
-                img_out->R[j + k * width] = RoundingUC(value[0] / size);
-                img_out->G[j + k * width] = RoundingUC(value[1] / size);
-                img_out->B[j + k * width] = RoundingUC(value[2] / size);
+                img_rgb->R[j + k * width] = RoundingUC(value[0] / size);
+                img_rgb->G[j + k * width] = RoundingUC(value[1] / size);
+                img_rgb->B[j + k * width] = RoundingUC(value[2] / size);
             }
         }
     }
+
+    CopyRGB(img_in, img_rgb);
+    Free(img_rgb);
 }
 
-/* void ResizeIMG(IMG_RGB* img_out, IMG_RGB* img_in, double scale)
+/* *void ResizeIMG(IMG_RGB *img_in, double scale)
 {
-    IMG_RGB* tmp = new IMG_RGB;
+    IMG_RGB *tmp = new IMG_RGB;
     int width, height;
     
     width = img->width * scale;
@@ -594,7 +680,7 @@ void MotionBlur(IMG_RGB* img_out, IMG_RGB* img_in, int size, int direction)
     return tmp;
 }*/
 
-void AffineTransformation(IMG_RGB* img_out, IMG_RGB* img_in, double a, double b, double c, double d, double e, double f)
+void AffineTransformation(IMG_RGB *img_in, double a, double b, double c, double d, double e, double f)
 {
     auto BicubicSinc = [](double t) -> double {
         double value, at;
@@ -611,6 +697,8 @@ void AffineTransformation(IMG_RGB* img_out, IMG_RGB* img_in, double a, double b,
         }
         return value;
     };
+
+    IMG_RGB *img_rgb = new IMG_RGB;
 
     int j, k;
 	int jj, kk;
@@ -630,6 +718,8 @@ void AffineTransformation(IMG_RGB* img_out, IMG_RGB* img_in, double a, double b,
 	height = img_in->height;
 	w2 = width / 2;
 	h2 = height / 2;
+
+    AllocImgRGB(img_rgb, width, height);
 
 	for (k = 0; k<height; k++){       /* 変換後の画像上でスキャン */
 		for (j = 0; j<width; j++){    /* 変換後の画像上でスキャン */
@@ -691,10 +781,12 @@ void AffineTransformation(IMG_RGB* img_out, IMG_RGB* img_in, double a, double b,
 				sumG = sumG + workG[loop] * hx[loop];
 				sumB = sumB + workB[loop] * hx[loop];
 			}
-			img_out->R[j + k*width] = RoundingInt(sumR);
-			img_out->G[j + k*width] = RoundingInt(sumG);
-			img_out->B[j + k*width] = RoundingInt(sumB);
+			img_rgb->R[j + k*width] = RoundingInt(sumR);
+			img_rgb->G[j + k*width] = RoundingInt(sumG);
+			img_rgb->B[j + k*width] = RoundingInt(sumB);
 		}
 	}
 
+    CopyRGB(img_in, img_rgb);
+    Free(img_rgb);
 }

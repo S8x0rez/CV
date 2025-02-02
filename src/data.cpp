@@ -126,7 +126,7 @@ void Free(IMG_YUV *img)
 	delete img;
 }
 
-void CopyIMG(IMG_COMMON *img_out, IMG_COMMON *img_in)
+void CopyCMN(IMG_COMMON *img_out, IMG_COMMON *img_in)
 {
 	img_out->width = img_in->width;
 	img_out->height = img_in->height;
