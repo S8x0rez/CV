@@ -1,6 +1,5 @@
 #include "data.hpp"
 
-<<<<<<<< HEAD:src/data.cpp
 void AllocImg(IMG *img, int width, int height, int channel)
 {
     img->width = width;
